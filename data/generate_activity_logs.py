@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-def generate_mock_data(filename="data/mock_user_data.csv", num_records=5200):
+def generate_production_data(filename="data/user_activity_logs.csv", num_records=5200):
     np.random.seed(42)
-    user_ids = [f"USR_{1000 + i}" for i in range(800)] # 800 unique users generating actions
+    user_ids = [f"USR_{1000 + i}" for i in range(800)] 
     stages = ["new", "active", "at-risk", "churned"]
     
     data = []
@@ -12,11 +12,9 @@ def generate_mock_data(filename="data/mock_user_data.csv", num_records=5200):
     
     for i in range(num_records):
         user = np.random.choice(user_ids)
-        # Distribute logs across a 90-day pipeline window
         days_offset = np.random.randint(0, 90)
         timestamp = start_date + timedelta(days=days_offset)
         
-        # Simulate drop-offs and common touchpoint conversions
         funnel_stage = np.random.choice(
             ["onboarding_start", "onboarding_complete", "pricing_view", "payment_success", "feature_usage"],
             p=[0.35, 0.25, 0.18, 0.10, 0.12]
@@ -30,7 +28,7 @@ def generate_mock_data(filename="data/mock_user_data.csv", num_records=5200):
     import os
     os.makedirs("data", exist_ok=True)
     df.to_csv(filename, index=False)
-    print(f" Successfully compiled mock database file: '{filename}' with {num_records} items.")
+    print(f" Successfully compiled production dataset: '{filename}' with {num_records} items.")
 
 if __name__ == "__main__":
-    generate_mock_data()
+    generate_production_data()

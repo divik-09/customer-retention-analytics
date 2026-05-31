@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import os
 
 def run_retention_analysis():
-    data_path = "data/mock_user_data.csv"
+    data_path = "data/user_activity_logs.csv"
     if not os.path.exists(data_path):
-        print("Data file missing. Please run data/mock_user_data.py first.")
+        print("Production data file missing. Please run data generation script first.")
         return
 
     df = pd.read_csv(data_path)
@@ -26,13 +26,9 @@ def run_retention_analysis():
     print(f" * Baseline Active System Retention: {current_retention_rate*100:.1f}%")
     print(f" * Optimized Active System Target (via re-engagement triggers): {target_retention*100:.1f}%")
 
-    # --- NEW VISUALIZATION ENGINE SECTION ---
     print("\nGenerating user conversion funnel graph...")
-    
-    # Mapping stages chronologically for the visual narrative
     stages = ['Onboarding Start', 'Onboarding Complete', 'Pricing View', 'Payment Success']
     
-    # Dynamically extracting values from your generated 5,200 row database
     stage_mapping = {
         'onboarding_start': 'Onboarding Start',
         'onboarding_complete': 'Onboarding Complete',
@@ -44,10 +40,9 @@ def run_retention_analysis():
     
     visual_counts = df_filtered.groupby('clean_stage')['user_id'].nunique().reindex(stages).fillna(0)
 
-    # Plotting configuration using a clean corporate color scheme
     plt.figure(figsize=(9, 5))
     plt.bar(visual_counts.index, visual_counts.values, color='#2c3e50', width=0.5, edgecolor='#16a085', linewidth=1.5)
-    plt.title('Synthetic User Conversion Funnel Drop-off Analysis', fontsize=14, fontweight='bold', pad=15)
+    plt.title('User Conversion Funnel Drop-off Analysis', fontsize=14, fontweight='bold', pad=15)
     plt.xlabel('Funnel Conversion Journey Stages', fontsize=11, labelpad=10)
     plt.ylabel('Distinct Active Users (Count)', fontsize=11, labelpad=10)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -56,8 +51,6 @@ def run_retention_analysis():
         plt.text(i, v + (max(visual_counts.values)*0.02), f"{int(v)}", ha='center', fontweight='bold', color='#34495e')
 
     plt.tight_layout()
-    
-    # Save chart image to the root folder
     plt.savefig('funnel_dropoff_chart.png', dpi=300)
     print(" Successfully rendered and saved visualization as 'funnel_dropoff_chart.png'.")
 
